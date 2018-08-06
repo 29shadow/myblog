@@ -1,0 +1,5 @@
+zuul:
+  routes:
+    blog-service:
+      path: /blog/**
+      url: http://127.0.0.1:8081/

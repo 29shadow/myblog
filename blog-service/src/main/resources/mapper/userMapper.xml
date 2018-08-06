@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gtzhou.blog.dao.UserMapper">
+    <resultMap id="userMap" type="com.gtzhou.blog.domain.User">
+        <id column="id" property="userId" jdbcType="INTEGER"/>
+        <result column="user_name" property="username" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="gender" property="gender" jdbcType="INTEGER"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="created_by" property="createdBy" jdbcType="VARCHAR"/>
+        <result column="created_time" property="createdTime" jdbcType="DATE"/>
+        <result column="updated_by" property="updatedBy" jdbcType="VARCHAR"/>
+        <result column="updated_time" property="updatedTime" jdbcType="DATE"/>
+        <collection property="roles" ofType="com.gtzhou.blog.domain.Role" javaType="java.util.ArrayList" select="getRolesByUserId"
+                    column="id">
+        </collection>
+    </resultMap>
+    
+    <!--<resultMap id="lazyLoadRoles" type="com.gtzhou.blog.domain.User" extends="userMap">-->
+        <!--<collection property="roles" ofType="com.gtzhou.blog.domain.Role" javaType="java.util.ArrayList" select="getRolesByUserId"-->
+                    <!--column="userId">-->
+        <!--</collection>-->
+    <!--</resultMap>-->
+
+
+    <resultMap id="roleMap" type="com.gtzhou.blog.domain.Role">
+            <id column="id" property="roleId" jdbcType="INTEGER"/>
+            <result column="role_name" property="roleName" jdbcType="VARCHAR"/>
+            <result column="description" property="description" jdbcType="VARCHAR"/>
+            <result column="status" property="status" jdbcType="INTEGER"/>
+            <result column="created_by" property="createdBy" jdbcType="VARCHAR"/>
+            <result column="created_time" property="createdTime" jdbcType="DATE"/>
+            <result column="updated_by" property="updatedBy" jdbcType="VARCHAR"/>
+            <result column="updated_time" property="updatedTime" jdbcType="DATE"/>
+    </resultMap>
+
+    <!--<resultMap id="eagerLoadRoles" type="com.gtzhou.blog.domain.User" extends="userMap">-->
+        <!--<collection property="roles" ofType="com.gtzhou.blog.domain.Role" column="userId">-->
+            <!--<id column="id" property="roleId" jdbcType="INTEGER"/>-->
+            <!--<result column="role_name" property="roleName" jdbcType="VARCHAR"/>-->
+            <!--<result column="description" property="description" jdbcType="VARCHAR"/>-->
+            <!--<result column="status" property="status" jdbcType="INTEGER"/>-->
+            <!--<result column="created_by" property="createdBy" jdbcType="VARCHAR"/>-->
+            <!--<result column="created_time" property="createdTime" jdbcType="DATE"/>-->
+            <!--<result column="updated_by" property="updatedBy" jdbcType="VARCHAR"/>-->
+            <!--<result column="updated_time" property="updatedTime" jdbcType="DATE"/>-->
+        <!--</collection>-->
+    <!--</resultMap>-->
+
+
+
+    <select id="loadUserByUsername" parameterType="java.lang.String" resultMap="userMap">
+        select * from sys_user where user_name = #{username}
+    </select>
+
+    <select id="getRolesByUserId" parameterType="java.lang.Integer" resultMap="roleMap">
+        SELECT r.*
+        FROM sys_role r,user_role ur
+        WHERE r.id = ur.role_id and ur.user_id = #{userId}
+    </select>
+
+    <select id="getAll" resultMap="userMap">
+        select * from sys_user
+    </select>
+
+    <sql id="Base_Column_List">
+        id, user_name, password, email,gender,phone,status
+    </sql>
+
+    <select id="getUserById" parameterType="java.lang.Integer" resultMap="userMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user
+        WHERE id = #{userId}
+    </select>
+
+    <insert id="save" parameterType="com.gtzhou.blog.domain.User">
+        INSERT INTO
+        sys_user
+        (<include refid="Base_Column_List"/>)
+        VALUES
+        (#{userId},#{userName},#{password},#{email},#{gender},#{phone},#{status})
+    </insert>
+
+    <update id="updateUserId" parameterType="com.gtzhou.blog.domain.User">
+        update sys_user set user_name = #{userName},email = #{email},gender = #{gender},status = #{status}
+    </update>
+
+    <delete id="deleteUserById" parameterType="java.lang.Integer">
+        delete from sys_user where id = #{userId}
+    </delete>
+
+    <select id="getUserByPage" resultMap="userMap">
+        select * from sys_user
+    </select>
+
+</mapper>
