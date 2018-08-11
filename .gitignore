@@ -27,6 +27,4 @@
 /.nb-gradle/
 
 /.idea/
-gradlew.bat
 # settings.gradle
-gradlew
