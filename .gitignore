@@ -28,5 +28,5 @@
 
 /.idea/
 gradlew.bat
-settings.gradle
+# settings.gradle
 gradlew
